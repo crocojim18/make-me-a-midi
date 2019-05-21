@@ -7,6 +7,7 @@
 * End of Track
 * Tempo & Time Signature
 * Track Name
+* Program Track
 
 #### Known Issues
 * Currrently only supported in Python 2.7

@@ -10,6 +10,7 @@ tra = Track()
 tra.addEvent(TimeSignatureEvent(num=4, denom=4))
 tra.addEvent(TempoEvent())
 tra.addEvent(TrackNameEvent(name="Tempo Track"))
+tra.addEvent(ProgramChangeEvent(instrument=0x73))
 tra.addEvent(EndOfTrackEvent(deltaTime=7680))
 
 tra2 = Track()

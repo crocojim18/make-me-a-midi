@@ -48,6 +48,30 @@ class NoteOnEvent(NoteEvent):
 		toReturn += int2bin(self.velocity,1)
 		return toReturn
 
+class ProgramChangeEvent(Event):
+	def __init__(self, deltaTime=0, channel=1, instrument=00):
+		self.deltaTime = deltaTime
+		self.channel = channel
+		self.instrument = instrument
+		
+	def setChannel(self, channel):
+		self.channel = channel
+		
+	def setInstrument(self, instrument):
+		self.instrument = instrument
+
+	def __str__(self):
+		if self.channel > 16:
+			print "Invalid channel. Channel is greater than 16."
+			return
+		toReturn = int2vl(self.deltaTime)
+		toReturn += int2bin(0xc0+(self.channel-1),1)
+		if self.instrument > 0x7f:
+			print "Invalid instrument. Instrument is greater than 0x7F."
+			return
+		toReturn += int2bin(self.instrument,1)
+		return toReturn
+	
 ### Meta events ###
 		
 class EndOfTrackEvent(Event):
