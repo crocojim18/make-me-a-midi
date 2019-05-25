@@ -1,4 +1,4 @@
-from functions import *
+from midiFunctions import *
 from math import log
 
 class Event:

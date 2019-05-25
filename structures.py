@@ -1,17 +1,20 @@
-from functions import *
+from midiFunctions import *
 
 class Header:
-	def __init__(self):
+	def __init__(self, format=1, division=192):
 		self.magicNumber = "MThd"
 		self.length = 6
-		self.format = 1
+		self.format = format
 		self.tracks = []
 		self.numOfTracks = len(self.tracks)
-		self.division = 0xC0
+		self.division = division
 		
 	def addTrack(self, track):
 		self.tracks.append(track)
 		self.numOfTracks = len(self.tracks)
+
+	def setDivision(self, division):
+		self.division = division
 
 	def __str__(self):
 		toReturn = self.magicNumber + int2bin(self.length,4) 
