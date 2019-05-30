@@ -1,32 +1,45 @@
 from midiFunctions import *
 from math import log
 
+#should only be used to make children
 class Event:
+	#NOTE: this almost always should bbe overridden by child constructors
 	def __init__(self):
 		self.deltaTime = 0
 
+	#INPUT: 0 <= integer <= 0x0FFFFFFF
+	#NOTE: this function generally should not be overridden
 	def setDelta(self, delta):
 		self.deltaTime = int2vl(delta)
 
 ### Voice events ###
 
+#should only be used to make children
 class NoteEvent(Event):
+	#INPUT: deltaTime: 0 <= integer <= 0x0FFFFFFF
+	#       channel: 1 <= integer <= 16
+	#       note: 0 <= integer < 128
+	#       velocity: 0 <= integer < 128
 	def __init__(self, deltaTime = 0, channel=1, note=0x3c, velocity=0x40):
 		self.deltaTime = deltaTime
 		self.channel = channel
 		self.note = note
 		self.velocity = velocity
-		
+	
+	#INPUT: 0 <= integer < 128
 	def setNote(self, note):
 		self.note = note
-		
+
+	#INPUT: 0 <= integer < 128
 	def setVelocity(self, velocity):
 		self.velocity = velocity
 		
+	#INPUT: 1 <= integer <= 16
 	def setChannel(self, channel):
 		self.channel = channel
 		
 class NoteOffEvent(NoteEvent):
+	#OUTPUT: bytearray containing event information
 	def __str__(self):
 		if self.channel > 16:
 			print "Invalid channel. Channel is greater than 16."
@@ -38,6 +51,7 @@ class NoteOffEvent(NoteEvent):
 		return toReturn
 		
 class NoteOnEvent(NoteEvent):
+	#OUTPUT: bytearray containing event information
 	def __str__(self):
 		if self.channel > 16:
 			print "Invalid channel. Channel is greater than 16."
@@ -91,7 +105,7 @@ class TempoEvent(Event):
 		self.time = tempo
 		
 	def setTempo(self, time):
-		if 0 <= time <= 0xffffff:
+		if 0 <= (60000000/time) <= 0xffffff:
 			self.time = time
 		else:
 			print "Tempo of {} not set.".format(time)
@@ -99,7 +113,7 @@ class TempoEvent(Event):
 	def __str__(self):
 		toReturn = int2vl(self.deltaTime)
 		toReturn += self.header
-		toReturn += int2bin(self.time, 3)
+		toReturn += int2bin(60000000/self.time, 3)
 		return toReturn
 
 #todo: add clock functionality
