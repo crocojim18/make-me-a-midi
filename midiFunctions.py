@@ -1,22 +1,27 @@
 import re
 
-#input: array of positive integers < 255 representing an integer using variable length quantity
-#output: integer representation of that array, < 0FFFFFFF
+#INPUT: bytearray representing an integer using variable length quantity
+#OUTPUT: integer representation of that array, <= 0x0FFFFFFF
+#NOTE: if no element <= 0x7F, will return None
+#      if value is greater than 0x0FFFFFFF, will return None
+#      if VLQ terminates before bytearray does, will return value at termination
 def vl2int(arr):
-	smallArr = []
-	kill = False
-	index = 0
-	toReturn = ''
-	while not kill:
-		if arr[index] < 128: kill = True
+	binStr = ''
+	term = False
+	for index in range(len(arr)):
+		if term: break
+		if arr[index] < 128: term = True
 		stri = bin(arr[index])[2:]
 		while len(stri) < 8:
 			stri = '0'+stri
-		smallArr.append(stri[1:])
-		index+=1
-	for i in smallArr:
-		toReturn += i
-	return int(toReturn, 2)
+		binStr += stri[1:]
+		if index == len(arr)-1 and not term:
+			print "Variable Length Quantity does not terminate."
+			return None
+		if index == 3 and arr[index] >= 128:
+			print "Variable Length Quantity is too large."
+			return None
+	return int(binStr, 2)
 	
 def int2vl(num):
 	strRep = bin(num)[2:]
